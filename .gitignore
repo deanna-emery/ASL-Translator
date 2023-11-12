@@ -1,3 +1,5 @@
+data_download/completed_vid_counter*
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
