@@ -1490,38 +1490,6 @@ class Head(tf_keras.layers.Layer):
     return outputs
 
 
-@tf_keras.utils.register_keras_serializable(package='Vision')
-class VidEmbed(tf_keras.Model):
-
-  def __init__(
-      self,
-      **kwargs):
-
-    super(VidEmbed, self).__init__(**kwargs)
-
-    self._flatten = tf_keras.layers.Reshape((-1, 8*8*168))
-    self._hidden = tf_keras.layers.Dense(1024, activation='relu', name='final_embedding')
-
-    
-  def get_config(self):
-    """Returns a dictionary containing the config used for initialization."""
-    config = {
-        'hidden_size': 1024
-    }
-    base_config = super(VidEmbed, self).get_config()
-    return dict(list(base_config.items()) + list(config.items()))
-
-  
-  def call(self, inputs):
-    """Calls the layer with the given inputs."""
-    x = inputs
-
-    x = self._flatten(x)
-    x = self._hidden(x)
-
-    return x
-
-
 
 
 @tf_keras.utils.register_keras_serializable(package='Vision')
