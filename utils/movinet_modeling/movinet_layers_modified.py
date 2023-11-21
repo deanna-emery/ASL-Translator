@@ -1491,7 +1491,6 @@ class Head(tf_keras.layers.Layer):
 
 
 
-
 @tf_keras.utils.register_keras_serializable(package='Vision')
 class ClassifierHead(tf_keras.layers.Layer):
   """Head layer for video networks.
@@ -1534,21 +1533,16 @@ class ClassifierHead(tf_keras.layers.Layer):
 
     self._num_classes = num_classes
     self._dropout_rate = dropout_rate
-    self._conv_type = conv_type
     self._activation = activation
-    self._output_activation = output_activation
-    self._kernel_initializer = kernel_initializer
-    self._kernel_regularizer = kernel_regularizer
     self._flatten = tf_keras.layers.Reshape((-1, 8*8*168))
     self._hidden_layers = [tf_keras.layers.Dense(4096, activation='swish', name='vid_embedding'),
                            tf_keras.layers.Dropout(dropout_rate),
-                           tf_keras.layers.Dense(2048, activation='swish', name='vid_embedding'),
-                           tf_keras.layers.Dropout(dropout_rate),
-                           tf_keras.layers.Dense(1024, activation='swish', name='vid_embedding')]
-    # self._vidembed = VidEmbed(name='VidEmbed')
+                           tf_keras.layers.Dense(768, activation='swish', name='vid_embedding')]
+
     self._dropout = tf_keras.layers.Dropout(dropout_rate)
-    self._classifier = tf_keras.layers.Dense(num_classes, activation='softmax', name='classifier')
     self._asl_pooling = tf_keras.layers.GlobalAvgPool1D()
+
+    self._classifier = tf_keras.layers.Dense(num_classes, activation='softmax', name='classifier')
 
     output_activation = output_activation if output_activation else 'linear'
     
@@ -1557,11 +1551,7 @@ class ClassifierHead(tf_keras.layers.Layer):
     config = {
         'num_classes': self._num_classes,
         'dropout_rate': self._dropout_rate,
-        'conv_type': self._conv_type,
         'activation': self._activation,
-        'output_activation': self._output_activation,
-        'kernel_initializer': self._kernel_initializer,
-        'kernel_regularizer': self._kernel_regularizer,
     }
     base_config = super(ClassifierHead, self).get_config()
     return dict(list(base_config.items()) + list(config.items()))
