@@ -1502,8 +1502,9 @@ class ClassifierHead(tf_keras.layers.Layer):
   def __init__(
       self,
       num_classes: int,
+      encoder_dim: int,
       dropout_rate: float = 0.1,
-      conv_type: str = '3d',
+      conv_type: str = 'conv',
       activation: nn_layers.Activation = 'swish',
       output_activation: Optional[nn_layers.Activation] = None,
       kernel_initializer: tf_keras.initializers.Initializer = 'HeNormal',
@@ -1534,10 +1535,17 @@ class ClassifierHead(tf_keras.layers.Layer):
     self._num_classes = num_classes
     self._dropout_rate = dropout_rate
     self._activation = activation
-    self._flatten = tf_keras.layers.Reshape((-1, 8*8*168))
-    self._hidden_layers = [tf_keras.layers.Dense(4096, activation='swish', name='vid_embedding'),
-                           tf_keras.layers.Dropout(dropout_rate),
-                           tf_keras.layers.Dense(768, activation='swish', name='vid_embedding')]
+    self._conv_type = conv_type
+    self._encoder_dim = encoder_dim
+
+    if conv_type != 'conv':
+        self._flatten = tf_keras.layers.Reshape((-1, 8*8*168))
+        self._hidden_layers = [tf_keras.layers.Dense(4096, activation='swish', name='vid_embedding'),
+                               tf_keras.layers.Dropout(dropout_rate),
+                               tf_keras.layers.Dense(self._encoder_dim, activation='swish', name='vid_embedding')]
+    else:
+        self._hidden_layers = tf_keras.layers.Conv2D(int(self._encoder_dim/16), 2, strides=(2, 2))
+        self._flatten = tf_keras.layers.Reshape((-1, self._encoder_dim))
 
     self._dropout = tf_keras.layers.Dropout(dropout_rate)
     self._asl_pooling = tf_keras.layers.GlobalAvgPool1D()
@@ -1552,6 +1560,7 @@ class ClassifierHead(tf_keras.layers.Layer):
         'num_classes': self._num_classes,
         'dropout_rate': self._dropout_rate,
         'activation': self._activation,
+        'conv_type': self._conv_type
     }
     base_config = super(ClassifierHead, self).get_config()
     return dict(list(base_config.items()) + list(config.items()))
@@ -1561,10 +1570,15 @@ class ClassifierHead(tf_keras.layers.Layer):
     # Input Shape: [batch_size, 1, 1, 1, input_channels]
     x = inputs
     # x = self._vidembed(x)
-    vid_embed = self._flatten(x)
 
-    for layer in self._hidden_layers:
-        vid_embed = layer(vid_embed)
+    if self._conv_type != 'conv':
+        vid_embed = self._flatten(x)
+    
+        for layer in self._hidden_layers:
+            vid_embed = layer(vid_embed)
+    else:
+        vid_embed = self._hidden_layers(x)
+        vid_embed = self._flatten(vid_embed)
         
     x = self._dropout(vid_embed)
     x = self._asl_pooling(x)
@@ -1572,5 +1586,7 @@ class ClassifierHead(tf_keras.layers.Layer):
     x = self._classifier(x)
 
     return x, vid_embed
+
+
 
 

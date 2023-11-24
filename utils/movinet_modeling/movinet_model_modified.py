@@ -35,6 +35,7 @@ class MovinetClassifier(tf_keras.Model):
       self,
       backbone: tf_keras.Model,
       num_classes: int,
+      encoder_dim: int = 768,
       input_specs: Optional[Mapping[str, tf_keras.layers.InputSpec]] = None,
       activation: str = 'swish',
       dropout_rate: float = 0.0,
@@ -73,6 +74,7 @@ class MovinetClassifier(tf_keras.Model):
     self._kernel_regularizer = kernel_regularizer
     self._bias_regularizer = bias_regularizer
     self._output_states = output_states
+    self._encoder_dim = encoder_dim
 
     state_specs = None
     if backbone.use_external_states:
@@ -172,10 +174,11 @@ class MovinetClassifier(tf_keras.Model):
 
     x, vid_embed = movinet_layers_modified.ClassifierHead(
         num_classes=self._num_classes,
+        encoder_dim=self._encoder_dim,
         dropout_rate=self._dropout_rate,
         kernel_initializer=self._kernel_initializer,
         kernel_regularizer=self._kernel_regularizer,
-        conv_type=backbone.conv_type,
+        conv_type='conv',
         activation=self._activation)(
             x)
 
@@ -233,6 +236,7 @@ def build_movinet_model(
     input_specs: Mapping[str, tf_keras.layers.InputSpec],
     model_config: cfg.MovinetModel,
     num_classes: int,
+    encoder_dim: int = 768,
     l2_regularizer: Optional[tf_keras.regularizers.Regularizer] = None):
   """Builds movinet model."""
   logging.info('Building movinet model with num classes: %s', num_classes)
@@ -249,6 +253,7 @@ def build_movinet_model(
   model = MovinetClassifier(
       backbone,
       num_classes=num_classes,
+      encoder_dim=encoder_dim,
       kernel_regularizer=l2_regularizer,
       input_specs=input_specs_dict,
       activation=model_config.activation,
