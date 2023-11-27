@@ -22,7 +22,7 @@ from absl import logging
 import tensorflow as tf, tf_keras
 
 from official.projects.movinet.configs import movinet as cfg
-from official.projects.movinet.modeling import movinet_layers_modified
+from official.projects.movinet.modeling import movinet_layers_a3_modified
 from official.vision.modeling import backbones
 from official.vision.modeling import factory_3d as model_factory
 
@@ -38,7 +38,7 @@ class MovinetClassifier(tf_keras.Model):
       encoder_dim: int = 768,
       input_specs: Optional[Mapping[str, tf_keras.layers.InputSpec]] = None,
       activation: str = 'swish',
-      dropout_rate: float = 0.0,
+      dropout_rate: float = 0.1,
       kernel_initializer: str = 'HeNormal',
       kernel_regularizer: Optional[tf_keras.regularizers.Regularizer] = None,
       bias_regularizer: Optional[tf_keras.regularizers.Regularizer] = None,
@@ -172,7 +172,7 @@ class MovinetClassifier(tf_keras.Model):
         backbone=backbone, input_specs=input_specs, state_specs=state_specs)
     x = endpoints['block4_layer9']
 
-    x, vid_embed = movinet_layers_modified.ClassifierHead(
+    x, vid_embed = movinet_layers_a3_modified.ClassifierHead(
         num_classes=self._num_classes,
         encoder_dim=self._encoder_dim,
         dropout_rate=self._dropout_rate,
