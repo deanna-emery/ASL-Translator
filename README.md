@@ -10,7 +10,9 @@
 To run the model, you must first clone the tensorflow models repo to access the MoViNet source code: https://github.com/tensorflow/models/tree/master/official/projects/movinet
 
 Then you must copy the contents of our `movinet_modifications` folder into the tensorflow models repo in the following location:
-`cp ASL-Translator/movinet_modifications/* models/official/projects/movinet/modeling/`
+```
+cp ASL-Translator/movinet_modifications/* models/official/projects/movinet/modeling/
+```
 
 Finally, you may load the models with the following code:
 
@@ -30,3 +32,7 @@ tokenizer = AutoTokenizer.from_pretrained("t5-base")
 t5_model = TFAutoModelForSeq2SeqLM.from_pretrained("deanna-emery/ASL_t5_word_epoch15_1204")
 ```
 
+
+### About the model
+
+For more information on the details of the model, please refer to the following [paper](https://github.com/deanna-emery/ASL-Translator/blob/9b000d39ef8d35c8334941c97d620005bd8c6f62/American_Sign_Language_Translation.pdf)
