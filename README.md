@@ -35,4 +35,4 @@ t5_model = TFAutoModelForSeq2SeqLM.from_pretrained("deanna-emery/ASL_t5_word_epo
 
 ### About the model
 
-For more information on the details of the model, please refer to the following [paper](https://github.com/deanna-emery/ASL-Translator/blob/9b000d39ef8d35c8334941c97d620005bd8c6f62/American_Sign_Language_Translation.pdf).
+For more information on the details of the model, please refer to the following [paper](https://github.com/deanna-emery/ASL-Translator/blob/9b000d39ef8d35c8334941c97d620005bd8c6f62/American_Sign_Language_Translation.pdf) or you can find a high-level summary [here](https://www.ischool.berkeley.edu/projects/2023/signsense-american-sign-language-translation).
