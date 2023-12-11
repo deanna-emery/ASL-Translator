@@ -1,0 +1,16 @@
+s3fs
+tensorflow_hub
+tensorflow_datasets
+pycocotools
+gin-config
+immutabledict
+sentencepiece
+transformers
+evaluate
+sacrebleu
+bert_score
+sentence-transformers
+keras-nlp
+tensorflow-model-optimization
+pyarrow
+fastparquet
