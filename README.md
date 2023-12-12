@@ -1,5 +1,8 @@
 # American Sign Language Translation: An Approach Combining MoViNets and T5
 
+In this repo, we address the challenge of developing a machine translation solution for American Sign Language (ASL) to overcome barriers in accessibility for deaf individuals. Recognizing and translating signs requires a comprehensive understanding of hand gestures, body poses, as well as facial features to capture the complete meaning of each sign, presenting a formidable challenge for sign language processing. We present a new architecture for translation of ASL comprised of a fine-tuned MoViNets CNN model and a T5 encoder-decoder model to generate translations from the video embeddings, achieving a BLEU score of 1.98 and an average cosine similarity score of 0.21. Additionally, we found that fine-tuning a pre-trained language model on single words first, and then further fine-tuning on complete captions resulted in superior performance. With more data and training time, this model architecture shows promise to achieve results comparable to state-of-the-art models.
+
+
 ### Running the model
 
 - You may generate predictions using our HuggingFace API: https://huggingface.co/spaces/deanna-emery/ASL-MoViNet-T5-translator
